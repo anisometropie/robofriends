@@ -1,0 +1,10 @@
+@font-face {
+font-family: 'Quando Regular';
+font-style: normal;
+font-weight: normal;
+src: local('Quando Regular'), url('../fonts/Quando-Regular.woff') format('woff');
+}
+
+h1 {
+	font-family: "Quando Regular";
+}
