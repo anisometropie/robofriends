@@ -1,6 +1,6 @@
 import React from 'react';
 
-function SearchBox( {searchChange} ) {
+function SearchBox({searchChange}) {
 	return (
 		<input type='search' placeholder='search robots' onChange={searchChange} />
 	);

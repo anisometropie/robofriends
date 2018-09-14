@@ -1,49 +1,58 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import CardList from 'components/CardList';
 import SearchBox from 'components/SearchBox';
 import Scroll from 'components/Scroll';
+import ErrorBoundry from 'components/ErrorBoundry';
 import './App.css'
+import { setSearchField } from 'actions'
+
+const mapStateToProps = state => ({
+	searchField: state.searchField
+});
+
+const mapDispatchToProps = (dispatch) => ({
+	onSearchChange: (event) => dispatch(setSearchField(event.target.value))
+})
 
 class App extends React.Component {
 	constructor() {
 		super();
 		this.state = {
 			robots: [],
-			searchField: ''
 		};
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		fetch('https://jsonplaceholder.typicode.com/users')
 			.then( response => response.json() )
 			.then( users => this.setState({robots: users}) );
 	}
 
-	onSearchChange = (event) => {
-		this.setState( {searchField: event.target.value } );
-	};
-
 	render() {
-		let filteredRobots = this.state.robots.filter( robot => {
+		const { robots } = this.state;
+		const { searchField, onSearchChange } = this.props;
+		let filteredRobots = robots.filter( robot => {
 			let robotName = robot.name.toLowerCase(robot.name);
-			let searchField = this.state.searchField.toLowerCase();
-			return robotName.includes(searchField);
+			return robotName.includes(searchField.toLowerCase());
 		});
-		if (this.state.robots.length === 0) {
+		if (robots.length === 0) {
 			return <h1 className='tc'>Loading</h1>;
 		}
 		else {
 			return (
 				<div className='tc'>
 					<h1>RoboFriends</h1>
-					<SearchBox searchChange={this.onSearchChange}/>
-					<Scroll>
+					<SearchBox searchChange={onSearchChange}/>
+					{/* <Scroll> */}
+					<ErrorBoundry>
 						<CardList robots={filteredRobots}/>
-					</Scroll>
+					</ErrorBoundry>
+					{/* </Scroll> */}
 				</div>
 			);
 		}
 	}
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
